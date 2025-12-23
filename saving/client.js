@@ -11,6 +11,7 @@ async function fetchData() {
         maxAmount = data.maxAmount
 
         document.getElementById('loadingState').style.display = 'none'
+        renderStudents(allStudents)
     } catch (error) {
         console.error('Error fetching data:', error)
         document.getElementById('loadingState').innerHTML = `
@@ -53,7 +54,7 @@ function renderStudent(student) {
                         <tr>
                             <td>สัปดาห์ ${payment.week}</td>
                             <td>${payment.label}</td>
-                            <td class="text-end">${payment.amount > 0 ? payment.amount : payment.amount} บาท</td>
+                            <td class="text-end">${payment.amount} บาท</td>
                             <td>${getStatusBadge(payment.status)}</td>
                         </tr>
                     `).join('')}
@@ -65,9 +66,7 @@ function renderStudent(student) {
     return `
     <div class="student-card">
         <div class="student-header">
-            <div class="student-name">
-                ${student.prefix}${student.firstName} ${student.lastName}
-            </div>
+            <div class="student-name">${student.prefix}${student.firstName} ${student.lastName}</div>
             <div class="student-number">เลขที่ ${student.id}</div>
         </div>
 
@@ -94,15 +93,27 @@ function renderStudent(student) {
     </div>`
 }
 
+function renderStudents(students) {
+    const container = document.getElementById('resultsContainer')
+    if (students.length === 0) {
+        container.innerHTML = `
+        <div class="no-results">
+            <i class="fas fa-search fa-3x mb-3"></i>
+            <p>ไม่พบข้อมูล</p>
+        </div>`
+    } else container.innerHTML = students.map(renderStudent).join('')
+}
+
 function searchStudents(query) {
     query = query.toLowerCase().trim()
-    if (!query) return document.getElementById('resultsContainer').innerHTML = ''
+    if (!query) return renderStudents(allStudents)
 
     const results = allStudents.filter(student => {
         const id = student.id.toString()
         const fullName = `${student.firstName} ${student.lastName}`.toLowerCase()
         const fullNameWithPrefix = `${student.prefix}${student.firstName} ${student.lastName}`.toLowerCase()
 
+        if (!isNaN(query) && id === query) return true
         return id === query ||
             fullName.includes(query) ||
             fullNameWithPrefix.includes(query) ||
@@ -110,18 +121,10 @@ function searchStudents(query) {
             student.lastName.toLowerCase().includes(query)
     })
 
-    const container = document.getElementById('resultsContainer')
-
-    if (results.length === 0) {
-        container.innerHTML = `
-        <div class="no-results">
-            <i class="fas fa-search fa-3x mb-3"></i>
-            <p>ไม่พบข้อมูลที่ค้นหา</p>
-        </div>`
-    } else container.innerHTML = results.map(student => renderStudent(student)).join('')
+    renderStudents(results)
 }
 
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', fetchData)
+document.addEventListener('DOMContentLoaded', () => {
+    fetchData()
     document.getElementById('searchInput').addEventListener('input', (e) => searchStudents(e.target.value))
-} else fetchData()
+})
