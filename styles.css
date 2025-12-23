@@ -1,0 +1,235 @@
+:root {
+  --primary-blue: #0a3662;
+  --dark-bg: #0d1117;
+  --card-bg: #161b22;
+  --border-color: #30363d;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --success: #28a745;
+  --warning: #ffc107;
+  --danger: #dc3545;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Prompt", "Sarabun", sans-serif;
+  background-color: var(--dark-bg);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+.header {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, #0c4a7a 100%);
+  padding: 2rem 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  border-bottom: 2px solid var(--border-color);
+}
+
+.header h1 {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.header p {
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0;
+}
+
+.search-section {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 2rem auto;
+  max-width: 600px;
+}
+
+.search-input {
+  background-color: var(--dark-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.75rem 1rem;
+  font-size: 1.1rem;
+  border-radius: 6px;
+}
+
+.search-input:focus {
+  background-color: var(--dark-bg);
+  border-color: var(--primary-blue);
+  color: var(--text-primary);
+  box-shadow: 0 0 0 0.2rem rgba(10, 54, 98, 0.25);
+}
+
+.search-input::placeholder {
+  color: var(--text-secondary);
+}
+
+.student-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.student-header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.student-name {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.student-number {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.payment-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-card {
+  background-color: var(--dark-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.summary-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.summary-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.summary-value.positive {
+  color: var(--success);
+}
+
+.summary-value.negative {
+  color: var(--danger);
+}
+
+.payment-table {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+th {
+  background-color: var(--primary-blue);
+  color: white;
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 500;
+  border-bottom: 2px solid var(--border-color);
+}
+
+th:first-child {
+  border-top-left-radius: 6px;
+}
+
+th:last-child {
+  border-top-right-radius: 6px;
+}
+
+td {
+  padding: 0.75rem;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--card-bg);
+}
+
+tr:last-child td:first-child {
+  border-bottom-left-radius: 6px;
+}
+
+tr:last-child td:last-child {
+  border-bottom-right-radius: 6px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.status-paid {
+  background-color: rgba(40, 167, 69, 0.2);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+.status-transfer {
+  background-color: rgba(0, 123, 255, 0.2);
+  color: #007bff;
+  border: 1px solid #007bff;
+}
+
+.status-unpaid {
+  background-color: rgba(220, 53, 69, 0.2);
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+.status-used {
+  background-color: rgba(255, 193, 7, 0.2);
+  color: var(--warning);
+  border: 1px solid var(--warning);
+}
+
+.no-results {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary);
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  color: var(--text-secondary);
+}
+
+.loading i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .payment-summary {
+    grid-template-columns: 1fr;
+  }
+
+  table {
+    font-size: 0.85rem;
+  }
+
+  th,
+  td {
+    padding: 0.5rem;
+  }
+}

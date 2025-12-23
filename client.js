@@ -1,0 +1,127 @@
+let allStudents = []
+let maxAmount = 0
+
+async function fetchData() {
+    try {
+        const response = await fetch('/api/sheet-data')
+        const data = await response.json()
+        if (data.error) throw new Error(data.error)
+
+        allStudents = data.students
+        maxAmount = data.maxAmount
+
+        document.getElementById('loadingState').style.display = 'none'
+    } catch (error) {
+        console.error('Error fetching data:', error)
+        document.getElementById('loadingState').innerHTML = `
+        <i class="fas fa-exclamation-triangle text-danger"></i>
+        <p>เกิดข้อผิดพลาดในการโหลดข้อมูล</p>
+        <p class="small">${error.message}</p>`
+    }
+}
+
+function getStatusBadge(status) {
+    switch (status) {
+        case "จ่ายแล้ว":  return '<span class="status-badge status-paid"><i class="fas fa-check-circle me-1"></i>จ่ายแล้ว</span>'
+        case "โอนจ่าย":  return '<span class="status-badge status-transfer"><i class="fas fa-exchange-alt me-1"></i>โอนจ่าย</span>'
+        case "ใช้แล้ว":   return '<span class="status-badge status-used"><i class="fas fa-minus-circle me-1"></i>ใช้แล้ว</span>'
+        default:        return '<span class="status-badge status-unpaid"><i class="fas fa-times-circle me-1"></i>ยังไม่จ่าย</span>'
+    }
+}
+
+function renderStudent(student) {
+    const totalOwed = maxAmount - student.totalPaid
+    const unpaidWeeks = student.payments.filter(p => !p.paid && !p.used)
+    const unpaidCount = unpaidWeeks.length
+    const unpaidAmount = unpaidWeeks.reduce((sum, p) => sum + p.amount, 0)
+
+    let paymentsTable = ''
+    if (student.payments.length > 0) {
+        paymentsTable = `
+        <div class="payment-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>สัปดาห์</th>
+                        <th>วันที่</th>
+                        <th class="text-end">จำนวน</th>
+                        <th>สถานะ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${student.payments.map(payment => `
+                        <tr>
+                            <td>สัปดาห์ ${payment.week}</td>
+                            <td>${payment.label}</td>
+                            <td class="text-end">${payment.amount > 0 ? payment.amount : payment.amount} บาท</td>
+                            <td>${getStatusBadge(payment.status)}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>`
+    }
+
+    return `
+    <div class="student-card">
+        <div class="student-header">
+            <div class="student-name">
+                ${student.prefix}${student.firstName} ${student.lastName}
+            </div>
+            <div class="student-number">เลขที่ ${student.id}</div>
+        </div>
+
+        <div class="payment-summary">
+            <div class="summary-card">
+                <div class="summary-label">จ่ายแล้ว</div>
+                <div class="summary-value positive">฿${student.totalPaid}</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">คงค้าง</div>
+                <div class="summary-value ${totalOwed > 0 ? 'negative' : 'positive'}">฿${totalOwed}</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">สัปดาห์ที่ยังไม่จ่าย</div>
+                <div class="summary-value ${unpaidCount > 0 ? 'negative' : 'positive'}">${unpaidCount} สัปดาห์</div>
+            </div>
+            <div class="summary-card">
+                <div class="summary-label">จำนวนที่ต้องจ่าย</div>
+                <div class="summary-value ${unpaidAmount > 0 ? 'negative' : 'positive'}">฿${unpaidAmount}</div>
+            </div>
+        </div>
+
+        ${paymentsTable}
+    </div>`
+}
+
+function searchStudents(query) {
+    query = query.toLowerCase().trim()
+    if (!query) return document.getElementById('resultsContainer').innerHTML = ''
+
+    const results = allStudents.filter(student => {
+        const id = student.id.toString()
+        const fullName = `${student.firstName} ${student.lastName}`.toLowerCase()
+        const fullNameWithPrefix = `${student.prefix}${student.firstName} ${student.lastName}`.toLowerCase()
+
+        return id === query ||
+            fullName.includes(query) ||
+            fullNameWithPrefix.includes(query) ||
+            student.firstName.toLowerCase().includes(query) ||
+            student.lastName.toLowerCase().includes(query)
+    })
+
+    const container = document.getElementById('resultsContainer')
+
+    if (results.length === 0) {
+        container.innerHTML = `
+        <div class="no-results">
+            <i class="fas fa-search fa-3x mb-3"></i>
+            <p>ไม่พบข้อมูลที่ค้นหา</p>
+        </div>`
+    } else container.innerHTML = results.map(student => renderStudent(student)).join('')
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fetchData)
+    document.getElementById('searchInput').addEventListener('input', (e) => searchStudents(e.target.value))
+} else fetchData()
