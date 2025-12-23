@@ -11,6 +11,7 @@ async function fetchData() {
         maxAmount = data.maxAmount
 
         document.getElementById('loadingState').style.display = 'none'
+        renderSummaryTable(allStudents)
         renderStudents(allStudents)
     } catch (error) {
         console.error('Error fetching data:', error)
@@ -122,6 +123,45 @@ function searchStudents(query) {
     })
 
     renderStudents(results)
+}
+
+function renderSummaryTable(students) {
+    if (!students.length) return document.getElementById('summaryTableContainer').innerHTML = ''
+
+    const rows = students.map(s => {
+        const totalOwed = maxAmount - s.totalPaid
+        const unpaidWeeks = s.payments.filter(p => !p.paid && !p.used).length
+        const unpaidAmount = s.payments.filter(p => !p.paid && !p.used)
+            .reduce((sum, p) => sum + p.amount, 0)
+        return `
+      <tr>
+        <td>${s.id}</td>
+        <td>${s.prefix}${s.firstName} ${s.lastName}</td>
+        <td>฿${s.totalPaid}</td>
+        <td>฿${totalOwed}</td>
+        <td>${unpaidWeeks} สัปดาห์</td>
+        <td>฿${unpaidAmount}</td>
+      </tr>`
+    }).join('')
+
+    document.getElementById('summaryTableContainer').innerHTML = `
+    <div class="payment-table mb-3">
+      <table>
+        <thead>
+          <tr>
+            <th>เลขที่</th>
+            <th>ชื่อจริง</th>
+            <th>จ่ายแล้ว</th>
+            <th>คงค้าง</th>
+            <th>สัปดาห์ที่ยังไม่จ่าย</th>
+            <th>จำนวนที่ต้องจ่าย</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows}
+        </tbody>
+      </table>
+    </div>`
 }
 
 document.addEventListener('DOMContentLoaded', () => {
