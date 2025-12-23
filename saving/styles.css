@@ -160,6 +160,42 @@ tr:last-child td:last-child {
   border-bottom-right-radius: 6px;
 }
 
+.payment-table table thead tr th {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, #0c4a7a 100%);
+  color: white;
+}
+
+.payment-table table tbody tr td {
+  background-color: var(--card-bg);
+}
+
+.payment-table table tbody tr td:nth-child(3),
+.payment-table table tbody tr td:nth-child(4),
+.payment-table table tbody tr td:nth-child(6) {
+  font-weight: 600;
+}
+
+.payment-table table tbody tr:nth-child(odd) td {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.payment-table table tbody tr:nth-child(even) td {
+  background-color: var(--card-bg);
+}
+
+.payment-table table tbody tr td:nth-child(3) {
+  color: var(--success);
+  font-weight: 600;
+}
+.payment-table table tbody tr td:nth-child(4) {
+  color: var(--danger);
+  font-weight: 600;
+}
+.payment-table table tbody tr td:nth-child(6) {
+  color: var(--danger);
+  font-weight: 600;
+}
+
 .status-badge {
   display: inline-block;
   padding: 0.25rem 0.75rem;
