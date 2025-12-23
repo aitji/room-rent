@@ -115,34 +115,34 @@ function renderSummaryTable(students) {
         const unpaidAmount = s.payments.filter(p => !p.paid && !p.used)
             .reduce((sum, p) => sum + p.amount, 0)
         return `
-          <tr>
+        <tr>
             <td>${s.id}</td>
             <td>${s.prefix}${s.firstName} ${s.lastName}</td>
             <td class="${s.totalPaid < 0 ? 'negative' : 'positive'}">฿${s.totalPaid}</td>
             <td class="${totalOwed > 0 ? 'negative' : 'positive'}">฿${totalOwed}</td>
             <td class="${unpaidWeeks > 0 ? 'negative' : 'positive'}">${unpaidWeeks} สัปดาห์</td>
             <td class="${unpaidAmount > 0 ? 'negative' : 'positive'}">฿${unpaidAmount}</td>
-          </tr>`
+        </tr>`
     }).join('')
 
     container.innerHTML = `
-      <div class="payment-table mb-3">
+    <div class="payment-table mb-3">
         <table>
-          <thead>
+            <thead>
             <tr>
-              <th>เลขที่</th>
-              <th>ชื่อจริง</th>
-              <th>จ่ายแล้ว</th>
-              <th>คงค้าง</th>
-              <th>สัปดาห์ที่ยังไม่จ่าย</th>
-              <th>จำนวนที่ต้องจ่าย</th>
+                <th>ที่</th>
+                <th>ชื่อจริง</th>
+                <th>จ่ายแล้ว</th>
+                <th>คงค้าง</th>
+                <th>สัปดาห์ที่ยังไม่จ่าย</th>
+                <th>จำนวนที่ต้องจ่าย</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             ${rows}
-          </tbody>
+            </tbody>
         </table>
-      </div>`
+    </div>`
 }
 
 function searchStudents(query) {
